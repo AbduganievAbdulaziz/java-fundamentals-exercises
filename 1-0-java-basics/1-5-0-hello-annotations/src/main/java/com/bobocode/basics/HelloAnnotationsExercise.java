@@ -1,5 +1,10 @@
 package com.bobocode.basics;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * {@link HelloAnnotationsExercise} is an exercise class that is marked with be corresponding @{@link Exercise}
  * annotation. The annotation value specifies exercise name "hello-annotation-basic". It does not specify any custom
@@ -13,5 +18,13 @@ package com.bobocode.basics;
  *
  * @author Taras Boychuk
  */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@interface Exercise {
+    String value();
+    Level complexityLevel() default Level.BASIC;
+}
+
+@Exercise("hello-annotation-basic")
 public class HelloAnnotationsExercise { // todo: mark class with the annotation according to the javadoc
 }
