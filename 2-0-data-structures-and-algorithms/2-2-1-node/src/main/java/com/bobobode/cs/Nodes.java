@@ -22,7 +22,7 @@ public class Nodes {
      * @return a new instance of {@link Node}
      */
     public static <T> Node<T> create(T element) {
-        throw new ExerciseNotCompletedException(); // todo:
+        return new Node<>(element);
     }
 
     /**
@@ -33,7 +33,7 @@ public class Nodes {
      * @param <T>    a genetic type
      */
     public static <T> void link(Node<T> first, Node<T> second) {
-        throw new ExerciseNotCompletedException(); // todo:
+        first.next = second;
     }
 
     /**
@@ -46,7 +46,10 @@ public class Nodes {
      * @return a reference to a first node created based on firstElement
      */
     public static <T> Node<T> pairOf(T firstElement, T secondElement) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<T> nodePair = new Node<>(firstElement);
+        nodePair.next = new Node<>(secondElement);
+
+        return nodePair;
     }
 
     /**
@@ -60,7 +63,10 @@ public class Nodes {
      * @return a reference to the first node
      */
     public static <T> Node<T> closedPairOf(T firstElement, T secondElement) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<T> nodePair = pairOf(firstElement, secondElement);
+        nodePair.next.next = nodePair;
+
+        return nodePair;
     }
 
     /**
@@ -72,7 +78,19 @@ public class Nodes {
      * @return a reference to the first element of the chain
      */
     public static <T> Node<T> chainOf(T... elements) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<T> head = null, tail = null;
+
+        for(T element : elements) {
+            if (head == null) {
+                head = new Node<>(element);
+                tail = head;
+            } else {
+                tail.next = new Node<>(element);
+                tail = tail.next;
+            }
+        }
+
+        return head;
     }
 
     /**
@@ -85,6 +103,21 @@ public class Nodes {
      * @return a reference to the first element of the chain
      */
     public static <T> Node<T> circleOf(T... elements) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<T> head = null, tail = null;
+
+        for(T element : elements) {
+            if (head == null) {
+                head = new Node<>(element);
+                tail = head;
+            } else {
+                tail.next = new Node<>(element);
+                tail = tail.next;
+            }
+        }
+
+        if (tail != null)
+            tail.next = head;
+
+        return head;
     }
 }
