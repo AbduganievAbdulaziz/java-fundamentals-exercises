@@ -1,9 +1,5 @@
 package com.bobocode.cs;
 
-
-import com.bobocode.util.ExerciseNotCompletedException;
-
-import javax.sound.sampled.Line;
 import java.util.NoSuchElementException;
 
 /**
@@ -106,14 +102,14 @@ public class LinkedList<T> implements List<T> {
     public void add(int index, T element) {
         if (index < 0 || index > size)
             throw new IndexOutOfBoundsException();
-        Node<T> newNode = Node.valueOf(element), node;
+        Node<T> newNode = Node.valueOf(element), beforeNewNode;
         if (index == 0) {
             newNode.setNext(head);
             head = newNode;
         } else {
-            node = getNode(index - 1);
-            newNode.setNext(node.getNext());
-            node.setNext(newNode);
+            beforeNewNode = getNode(index - 1);
+            newNode.setNext(beforeNewNode.getNext());
+            beforeNewNode.setNext(newNode);
             if (newNode.getNext() == null)
                 tail = newNode;
         }
