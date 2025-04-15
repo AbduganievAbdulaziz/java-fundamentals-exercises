@@ -17,33 +17,94 @@ import java.util.function.Consumer;
  * @author Maksym Stasiuk
  */
 public class RecursiveBinarySearchTree<T extends Comparable<T>> implements BinarySearchTree<T> {
+    private static class Node<T> {
+        T element;
+        Node<T> leftChild;
+        Node<T> rightChild;
+
+        private Node(T element) {
+            this.element = element;
+        }
+    }
+
+    private Node<T> root;
+    private int size;
 
     public static <T extends Comparable<T>> RecursiveBinarySearchTree<T> of(T... elements) {
-        throw new ExerciseNotCompletedException();
+        RecursiveBinarySearchTree<T> tree = new RecursiveBinarySearchTree<>();
+        for (T element : elements) {
+            tree.insert(element);
+        }
+        return tree;
+    }
+
+    private boolean makeInsert(Node<T> node, T element) {
+        int compare = element.compareTo(node.element);
+        if (compare == 0)
+            return false;
+        if (compare < 0 && node.leftChild == null) {
+            node.leftChild = new Node<>(element);
+            return true;
+        } else if (compare > 0 && node.rightChild == null) {
+            node.rightChild = new Node<>(element);
+            return true;
+        }
+        return compare < 0 ? makeInsert(node.leftChild, element) : makeInsert(node.rightChild, element);
     }
 
     @Override
     public boolean insert(T element) {
-        throw new ExerciseNotCompletedException();
+        if (root == null) {
+            root = new Node<>(element);
+            size++;
+            return true;
+        }
+        boolean result = makeInsert(root, element);
+        if (result)
+            size++;
+        return result;
+    }
+
+    private boolean elementExists(Node<T> node, T element) {
+        if (node == null)
+            return false;
+        int compare = element.compareTo(node.element);
+        if (compare == 0)
+            return true;
+        return elementExists(compare < 0 ? node.leftChild : node.rightChild, element);
     }
 
     @Override
     public boolean contains(T element) {
-        throw new ExerciseNotCompletedException();
+        return elementExists(root, java.util.Objects.requireNonNull(element));
     }
 
     @Override
     public int size() {
-        throw new ExerciseNotCompletedException();
+        return size;
+    }
+
+    private int calcDepth(Node<T> node, int depth) {
+        if (node == null)
+            return Math.max(depth - 1, 0);
+        return Math.max(calcDepth(node.leftChild, depth + 1), calcDepth(node.rightChild, depth + 1));
     }
 
     @Override
     public int depth() {
-        throw new ExerciseNotCompletedException();
+        return calcDepth(root, 0);
+    }
+
+    private void traverseInAsc(Node<T> node, Consumer<T> consumer) {
+        if (node == null)
+            return;
+        traverseInAsc(node.leftChild, consumer);
+        consumer.accept(node.element);
+        traverseInAsc(node.rightChild, consumer);
     }
 
     @Override
     public void inOrderTraversal(Consumer<T> consumer) {
-        throw new ExerciseNotCompletedException();
+        traverseInAsc(root, consumer);
     }
 }
