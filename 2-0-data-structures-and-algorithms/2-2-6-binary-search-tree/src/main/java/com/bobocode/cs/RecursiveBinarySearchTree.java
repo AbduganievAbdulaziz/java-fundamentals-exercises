@@ -59,10 +59,10 @@ public class RecursiveBinarySearchTree<T extends Comparable<T>> implements Binar
             size++;
             return true;
         }
-        boolean result = makeInsert(root, element);
-        if (result)
+        boolean insertSuccess = makeInsert(root, element);
+        if (insertSuccess)
             size++;
-        return result;
+        return insertSuccess;
     }
 
     private boolean elementExists(Node<T> node, T element) {
