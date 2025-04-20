@@ -34,6 +34,7 @@ public class HashTable<K, V> implements Map<K, V> {
         V value;
         Node<K, V> next;
 
+        // bug: fails some tests when used any other access modifier
         public Node(K key, V value) {
             this.key = key;
             this.value = value;
