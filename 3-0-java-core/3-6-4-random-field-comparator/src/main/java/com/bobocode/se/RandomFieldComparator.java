@@ -1,7 +1,13 @@
 package com.bobocode.se;
 
 import com.bobocode.util.ExerciseNotCompletedException;
+import lombok.SneakyThrows;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Comparator;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A generic comparator that is comparing a random field of the given class. The field is either primitive or
@@ -17,9 +23,19 @@ import java.util.Comparator;
  * @author Stanislav Zabramnyi
  */
 public class RandomFieldComparator<T> implements Comparator<T> {
+    private Class<T> targetType;
+    private Field comparingField;
+
+    private Field randomComparableField(Class<T> clazz) {
+        return Arrays.stream(clazz.getDeclaredFields())
+                     .filter(field -> field.getClass().isPrimitive() || Comparable.class.isAssignableFrom(field.getType()))
+                     .findAny()
+                     .orElseThrow(IllegalArgumentException::new);
+    }
 
     public RandomFieldComparator(Class<T> targetType) {
-        throw new ExerciseNotCompletedException(); // todo: implement this constructor;
+        this.targetType = requireNonNull(targetType);
+        this.comparingField = randomComparableField(targetType);
     }
 
     /**
@@ -34,14 +50,14 @@ public class RandomFieldComparator<T> implements Comparator<T> {
      */
     @Override
     public int compare(T o1, T o2) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method;
+        return compareFieldValues(requireNonNull(o1), requireNonNull(o2));
     }
 
     /**
      * Returns the name of the randomly-chosen comparing field.
      */
     public String getComparingFieldName() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method;
+        return comparingField.getName();
     }
 
     /**
@@ -52,6 +68,17 @@ public class RandomFieldComparator<T> implements Comparator<T> {
      */
     @Override
     public String toString() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method;
+        return String.format("Random field comparator of class '%s' is comparing '%s'", targetType.getSimpleName(),
+                getComparingFieldName());
+    }
+
+    @SneakyThrows
+    @SuppressWarnings("unchecked")
+    private <U extends Comparable<? super U>> int compareFieldValues(T o1, T o2) {
+        comparingField.setAccessible(true);
+        var fieldValue1 = (U) comparingField.get(o1);
+        var fieldValue2 = (U) comparingField.get(o2);
+        Comparator<U> comparator = Comparator.nullsLast(Comparator.naturalOrder());
+        return comparator.compare(fieldValue1, fieldValue2);
     }
 }
